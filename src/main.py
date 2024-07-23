@@ -1,10 +1,13 @@
 from fastapi import FastAPI
+from src.web import explorer
 
 app = FastAPI()
 
-@app.get("/")
-def top():
-    return {"message": "Hello World"}
+app.include_router(explorer.router)
+
+@app.get("/echo/{thing}")
+def echo(thing):
+    return {"message": f"echo: {thing}"}
 
 if __name__ == "__main__":
     import uvicorn
