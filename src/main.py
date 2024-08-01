@@ -2,10 +2,12 @@ from fastapi import FastAPI
 from src.web import explorer
 from src.web import creature
 
-app = FastAPI()
+app = FastAPI(
+    version="0.0.1",
+)
 
-app.include_router(explorer.router)
-app.include_router(creature.router)
+app.include_router(explorer.router, tags=["Explorer"])
+app.include_router(creature.router, tags=["Creature"])
 
 @app.get("/echo/{thing}")
 def echo(thing):
