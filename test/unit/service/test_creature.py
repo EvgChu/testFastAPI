@@ -24,5 +24,3 @@ def test_get_exists():
 def test_get_missing():
     resp = code.get_one("abra")
     assert resp is None
-    
-print("Ddd")

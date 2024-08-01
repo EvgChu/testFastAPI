@@ -1,6 +1,7 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from src.model.creature import Creature
 import src.service.creature as service
+from src.errors import Missing, Duplicate
 
 router = APIRouter(prefix="/creature")
 
@@ -10,15 +11,24 @@ def get_all() -> list[Creature]:
 
 @router.get("/{name}")
 def get_one(name) -> Creature | None:
-    return service.get_one(name)
+    try:
+        return service.get_one(name)
+    except Missing as exc:
+        raise HTTPException(status_code=404, detail=exc.message)
 
 @router.post("/")
 def create(creature: Creature) -> Creature:
-    return service.create(creature)
+    try:
+        return service.create(creature)
+    except Duplicate as exc:
+        raise HTTPException(status_code=404, detail=exc.message)
 
 @router.patch("/")
 def modify(creature: Creature) -> Creature:
-    return service.modify(creature)
+    try:
+        return service.modify(creature)
+    except Missing as exc:
+        raise HTTPException(status_code=404, detail=exc.message)
 
 @router.put("/")
 def replace(creature: Creature) -> Creature:
@@ -26,4 +36,7 @@ def replace(creature: Creature) -> Creature:
 
 @router.delete("/{name}")
 def delete(name: str) -> None:
-    return service.delete(name)
+    try:
+        return service.delete(name)
+    except Missing as exc:
+        raise HTTPException(status_code=404, detail=exc.message)
